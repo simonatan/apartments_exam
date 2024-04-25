@@ -30,21 +30,16 @@ public class Main {
                 int price = input.nextInt();
                 String number = input.next();
 
-                if (area > 100 && numberOfRooms == 3 && validCities.contains(city)) {
-                    numberOfValidApartments++;
-                } else {
-                    continue;
-                }
-
-                Apartment a = new Apartment(city, numberOfRooms, area, price, number);
-
                 if (apartmentsPerCity.containsKey(city)) {
                     apartmentsPerCity.put(city, apartmentsPerCity.get(city) + 1);
                 } else {
                     apartmentsPerCity.put(city, 1);
                 }
 
-                cheapestApartments.put(a, price);
+                if (area > 100 && numberOfRooms == 3 && validCities.contains(city)) {
+                    numberOfValidApartments++;
+                    cheapestApartments.put(new Apartment(city, numberOfRooms, area, price, number), price);
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
@@ -92,13 +87,11 @@ public class Main {
             output.println();
 
             i = 0;
-            for (Map.Entry<String, Integer> entry : sortedApartmentsPerCity) {
-                if (i == 5) break;
-                i++;
-                output.print(entry.getKey() + " " + entry.getValue());
-                output.println();
+            output.println(sortedApartmentsPerCity.get(0).getKey()/* + " " + sortedApartmentsPerCity.get(0).getValue()*/);
+            int prev = sortedApartmentsPerCity.get(0).getValue();
+            while (sortedApartmentsPerCity.get(++i).getValue() == prev) {
+                output.println(sortedApartmentsPerCity.get(i).getKey()/* + " " + sortedApartmentsPerCity.get(i).getValue()*/);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }finally {
@@ -107,23 +100,3 @@ public class Main {
         }
     }
 }
-
-/*
-    1. Apartment class
-    2. Exception class
-    3. Read from file
-        - read
-        - map listings by city
-        - map apartment and price
-        - counter for valid apartments
-    4. Sort listings by city
-    5. Sort apartments by price
-    6. Print to file
-        - print first 5 cheapest apartments that fulfill the requirements (their phone numbers - no duplicates)
-        - print the first 5 cities with the most listings
-
-    Requirements:
-        area > 100
-        3 rooms
-        from cities София, Варна, Бургас
-*/
